@@ -4,7 +4,7 @@ const groupID = 3252882;
 const bot_token = process.env.botToken;
 const rblxCookie = process.env.rblxCookie;
 const officerRoleE = "PointsGiver";
-const welcomeMessage = "Hi there, welcome to our official communication hub!!";
+const welcomeMessage = "Welcome!";
 const maxXP = 10;
 const xpAuditLogChannelID = "613178808421449728";
 const mainChatChannelID = "613178808421449728";
@@ -117,7 +117,7 @@ bot.on('message', async message => {
     return message.channel.send(`I should never run into this last message.\n**If I do, you fucked up somewhere in the code.**`)
   }
 
-  if (message.content.toLowerCase().startsWith(`${prefix}xp`)){
+  if (message.content.toLowerCase().startsWith(`${prefix}${xpName}`)){
     if (!message.member.roles.exists("name", `${officerRoleE}`)){
       return message.channel.send(`Sorry ${message.author}, but only users with the **\`${officerRoleE}\`** can run that command!`).then(message => message.delete(5000));
     }
@@ -127,15 +127,15 @@ bot.on('message', async message => {
       return message.channel.send(`Sorry ${message.author}, but you didn't provide me with a correct first argument--add or remove?\n**Adding ${xpName}: \`${prefix}${xpName} add 1 username1, username2, username3...\`\nRemoving ${xpName}: \`${prefix}${xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
     }else{
       if (!args[2]){
-        return message.channel.send(`Sorry ${message.author}, but you're missing the second argument--number of ${config.xpName}?\n**Adding ${config.xpName}: \`${config.prefix}${config.xpName} add 1 username1, username2, username3...\`\nRemoving ${config.xpName}: \`${config.prefix}${config.xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
+        return message.channel.send(`Sorry ${message.author}, but you're missing the second argument--number of ${xpName}?\n**Adding ${xpName}: \`${prefix}${xpName} add 1 username1, username2, username3...\`\nRemoving ${xpName}: \`${prefix}${xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
       }else if (isNaN(Number(args[2]))){
-        return message.channel.send(`Sorry ${message.author}, but you didn't provide me with a real number.\n**Adding ${config.xpName}: \`${config.prefix}${config.xpName} add 1 username1, username2, username3...\`\nRemoving ${config.xpName}: \`${config.prefix}${config.xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
+        return message.channel.send(`Sorry ${message.author}, but you didn't provide me with a real number.\n**Adding ${xpName}: \`${prefix}${xpName} add 1 username1, username2, username3...\`\nRemoving ${xpName}: \`${prefix}${xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
       }else if (args[2] < 0){
-        return message.channel.send(`Sorry ${message.author}, but you need to provide me with a positive number.\n**Adding ${config.xpName}: \`${config.prefix}${config.xpName} add 1 username1, username2, username3...\`\nRemoving ${config.xpName}: \`${config.prefix}${config.xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
-      }else if (args[2] > config.maxXP){
-        return message.channel.send(`Sorry ${message.author}, but you need to provide mw with a number that's less than the max ${config.xpName}--currently set at ${config.maxXP} ${config.xpName}.\n**Adding ${config.xpName}: \`${config.prefix}${config.xpName} add 1 username1, username2, username3...\`\nRemoving ${config.xpName}: \`${config.prefix}${config.xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
+        return message.channel.send(`Sorry ${message.author}, but you need to provide me with a positive number.\n**Adding ${xpName}: \`${prefix}${xpName} add 1 username1, username2, username3...\`\nRemoving ${xpName}: \`${prefix}${xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
+      }else if (args[2] > maxXP){
+        return message.channel.send(`Sorry ${message.author}, but you need to provide mw with a number that's less than the max ${xpName}--currently set at ${maxXP} ${xpName}.\n**Adding ${xpName}: \`${prefix}${xpName} add 1 username1, username2, username3...\`\nRemoving ${xpName}: \`${prefix}${xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
       }else if (!args[3]){
-        return message.channel.send(`Sorry ${message.author}, but you're missing the third argument--the usernames!\n**Adding ${config.xpName}: \`${config.prefix}${config.xpName} add 1 username1, username2, username3...\`\nRemoving ${config.xpName}: \`${config.prefix}${config.xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
+        return message.channel.send(`Sorry ${message.author}, but you're missing the third argument--the usernames!\n**Adding ${xpName}: \`${prefix}${xpName} add 1 username1, username2, username3...\`\nRemoving ${xpName}: \`${prefix}${xpName} remove 1 username1, username2, username3...\`**`).then(message => message.delete(5000));
       }else{
         if (args[1].toLowerCase() === "add"){
           var userArray = message.content.slice(message.content.indexOf(message.content.split(" ")[3])).split(', ');
@@ -206,14 +206,14 @@ bot.on('message', async message => {
 
                   for (i = body.roles.length-1; i > 0; i--){
                     console.log(i)
-                    var {body} = await snekfetch.get(`https://groups.roblox.com/v1/groups/${config.groupID}/roles`)
-                    var currentRankID = await rbx.getRankInGroup(config.groupID, userID)
+                    var {body} = await snekfetch.get(`https://groups.roblox.com/v1/groups/${groupID}/roles`)
+                    var currentRankID = await rbx.getRankInGroup(groupID, userID)
                     var bodyRolesRankNum = body.roles[i].rank
                     var bodyRoleRankName = body.roles[i].name
-                    var {body} = await snekfetch.get(`${config.fireBaseURL}/xpData/users/${userID}.json`)
+                    var {body} = await snekfetch.get(`${fireBaseURL}/xpData/users/${userID}.json`)
                     var currentXP = body.xpValue
 
-                    var { body } = await snekfetch.get(`${config.fireBaseURL}/roles/${currentRankID}.json`);
+                    var { body } = await snekfetch.get(`${fireBaseURL}/roles/${currentRankID}.json`);
 
                     var requiredXPAtCurrentRankID = body.requiredXP
                     console.log(`current ${xpName}- ${currentXP}\nrequired ${xpName}- ${requiredXPAtCurrentRankID}`)
@@ -325,14 +325,14 @@ bot.on('message', async message => {
 
                 for (i = body.roles.length-1; i > 0; i--){
                   console.log(i)
-                  var {body} = await snekfetch.get(`https://groups.roblox.com/v1/groups/${config.groupID}/roles`)
-                  var currentRankID = await rbx.getRankInGroup(config.groupID, userID)
+                  var {body} = await snekfetch.get(`https://groups.roblox.com/v1/groups/${groupID}/roles`)
+                  var currentRankID = await rbx.getRankInGroup(groupID, userID)
                   var bodyRolesRankNum = body.roles[i].rank
                   var bodyRoleRankName = body.roles[i].name
-                  var {body} = await snekfetch.get(`${config.fireBaseURL}/xpData/users/${userID}.json`)
+                  var {body} = await snekfetch.get(`${fireBaseURL}/xpData/users/${userID}.json`)
                   var currentXP = body.xpValue
 
-                  var { body } = await snekfetch.get(`${config.fireBaseURL}/roles/${currentRankID}.json`);
+                  var { body } = await snekfetch.get(`${fireBaseURL}/roles/${currentRankID}.json`);
 
                   var requiredXPAtCurrentRankID = body.requiredXP
                   console.log(`current ${xpName}- ${currentXP}\nrequired ${xpName}- ${requiredXPAtCurrentRankID}`)
